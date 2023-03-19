@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmbank.welfarelottery.mapper.LotteryRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fmbank.welfarelottery.entity.LotteryRecord">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="date" property="date"/>
+        <result column="week" property="week"/>
+        <result column="red" property="red"/>
+        <result column="blue" property="blue"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"  />
+        <result column="modify_time" property="modifyTime"  />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, `date`, week, red, blue, content, create_time, modify_time
+    </sql>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into t_lottery_record
+        ( code, `date`, week, red, blue, content,create_time,modify_time)
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (
+            #{record.code},
+            #{record.date},
+            #{record.week},
+            #{record.red},
+            #{record.blue},
+            #{record.content},
+            #{record.createTime},
+            #{record.modifyTime}
+            )
+        </foreach>
+        on duplicate key update
+        code=values(code),
+        `date`=values(date),
+        week =values(week),
+        red =values(red),
+        blue =values(blue),
+        content =values(content),
+        modify_time =values(modify_time)
+    </insert>
+
+    <select id="latestRecord" resultType="com.fmbank.welfarelottery.entity.LotteryRecord">
+      select * from t_lottery_record  where id=(select MAX(id) from t_lottery_record )
+    </select>
+
+</mapper>

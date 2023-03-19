@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmbank.welfarelottery.mapper.BuyRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fmbank.welfarelottery.entity.BuyRecord">
+        <id column="id" property="id" />
+        <result column="date" property="date" />
+        <result column="red" property="red" />
+        <result column="red_hit_total" property="redHitTotal" />
+        <result column="blue" property="blue" />
+        <result column="blue_hit_total" property="blueHitTotal" />
+        <result column="winning_amount" property="winningAmount" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, date, red, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time
+    </sql>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into t_buy_record
+        ( `date`, red, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time)
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (
+            #{record.date},
+            #{record.red},
+            #{record.redHitTotal},
+            #{record.blue},
+            #{record.blueHitTotal},
+            #{record.winningAmount},
+            #{record.createTime},
+            #{record.modifyTime}
+            )
+        </foreach>
+        on duplicate key update
+        `date`=values(date),
+        red =values(red),
+        blue =values(blue),
+        modify_time =values(modify_time)
+    </insert>
+</mapper>

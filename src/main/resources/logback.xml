@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
+    <property name="LOG_PATH" value="/home/tomcat/logs/welfareLottery"/>
+    <contextName>logback</contextName>
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%thread] %-5level) %cyan(%logger{50}) - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="all_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--设置日志命名模式 -->
+            <fileNamePattern>${LOG_PATH}/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder><!-- 格式化输出 -->
+            <!-- <pattern>%d %-5level %logger{36}[%line] - %msg%n</pattern>  -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.fmbank.welfarelottery" level="DEBUG" />
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <!--<appender-ref ref="all_log"/>-->
+    </root>
+
+</configuration>
