@@ -30,6 +30,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     @Resource
     BuyRecordMapper buyRecordMapper;
 
+    /*外围系统数据入库*/
     @Override
     public Integer dataToDb(Integer integer) {
         List<LotteryRecord> records = iDataGateway.getLotteryRecord(integer);
@@ -79,7 +80,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             buyRecord.setDate(sdf.format(new Date()));
             buyRecord.setRed(ball);
             //i小于0，进行拼接0
-            buyRecord.setBlue((i+1)< 10 ? "0" + (i+1) : String.valueOf(i+1));
+            buyRecord.setBlue((i + 1) < 10 ? "0" + (i + 1) : String.valueOf(i + 1));
             buyRecord.setCreateTime(new Date());
             buyRecord.setModifyTime(new Date());
             buyRecords.add(buyRecord);
@@ -87,5 +88,53 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         return buyRecordMapper.insertBatchs(buyRecords);
     }
 
+    @Override
+    public void cashAPrize() {
+        LotteryRecord latestRecord = lotteryRecordMapper.latestRecord();
+        log.info("最近的开奖记录-[{}]",latestRecord);
+        String red = latestRecord.getRed();
+        String[] split = red.split(",");
+        //中奖数据
+        ArrayList<String> reds = new ArrayList<>();
+        for (String s : split) {
+            reds.add(s);
+        }
+        EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        queryWrapper.eq("date", sdf.format(new Date()));
+        List<BuyRecord> buyRecords = buyRecordMapper.selectList(queryWrapper);
+        for (BuyRecord buyRecord : buyRecords) {
+            Integer redCount = 0;
+            Integer blueCount = 0;
+            String[] buyReds = buyRecord.getRed().split(",");
+            for (String buyRed : buyReds) {
+                if (reds.contains(buyRed)) redCount++;
+            }
+            if (latestRecord.getBlue().equals(buyRecord.getBlue())) blueCount++;
+            buyRecord.setRedHitTotal(redCount);
+            buyRecord.setBlueHitTotal(blueCount);
+            buyRecord.setWinningAmount(getAmount(redCount, blueCount));
+            buyRecord.setResult(latestRecord.getRed());
+        }
+        buyRecordMapper.insertBatchs(buyRecords);
+        log.info("开奖核对成功！");
+    }
 
+    private double getAmount(Integer redCount, Integer blueCount) {
+        /*一等奖*/
+        if ((redCount == 6 && blueCount == 1)) return 1000000;
+        //二等奖
+        if ((redCount == 6 && blueCount == 0)) return 50000;
+        //三等奖
+        if ((redCount == 5 && blueCount == 1)) return 3000;
+        //四等奖
+        if ((redCount == 5 && blueCount == 0)) return 200;
+        if ((redCount == 4 && blueCount == 1)) return 200;
+        //五等奖
+        if ((redCount == 4 && blueCount == 0)) return 10;
+        if ((redCount == 3 && blueCount == 1)) return 10;
+        //六等奖
+        if ((redCount <= 2 && blueCount == 1)) return 5;
+        return 0;
+    }
 }

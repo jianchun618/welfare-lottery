@@ -1,7 +1,6 @@
 package com.fmbank.welfarelottery.controller;
 
 
-import com.fmbank.welfarelottery.entity.LotteryRecord;
 import com.fmbank.welfarelottery.response.Result;
 import com.fmbank.welfarelottery.service.ILotteryRecordService;
 import io.swagger.annotations.Api;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p>
@@ -46,10 +44,16 @@ public class LotteryRecordController {
         return Result.success(iLotteryRecordService.showRecordSizeAndMapSize());
     }
 
-    @GetMapping("/dataRandom")
+/*    @GetMapping("/dataRandom")
     @ApiOperation("系统生成16条购买数据")
     public Result dataRandom(Integer integer) {
         return Result.success(iLotteryRecordService.dataRandom(integer));
-    }
+    }*/
 
+    @GetMapping("/cashAPrize")
+    @ApiOperation("统计当期中奖情况")
+    public Result cashAPrize() {
+        iLotteryRecordService.cashAPrize();
+        return Result.success();
+    }
 }

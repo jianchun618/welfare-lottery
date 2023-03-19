@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="date" property="date" />
         <result column="red" property="red" />
+        <result column="result" property="result" />
         <result column="red_hit_total" property="redHitTotal" />
         <result column="blue" property="blue" />
         <result column="blue_hit_total" property="blueHitTotal" />
@@ -17,17 +18,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, date, red, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time
+        id, date, red,result, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time
     </sql>
 
     <insert id="insertBatchs" parameterType="java.util.List">
         insert into t_buy_record
-        ( `date`, red, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time)
+        ( `date`, red,result, red_hit_total, blue, blue_hit_total, winning_amount, create_time, modify_time)
         values
         <foreach collection="records" item="record" index="index" separator=",">
             (
             #{record.date},
             #{record.red},
+            #{record.result},
             #{record.redHitTotal},
             #{record.blue},
             #{record.blueHitTotal},
@@ -39,7 +41,11 @@
         on duplicate key update
         `date`=values(date),
         red =values(red),
+        result =values(result),
         blue =values(blue),
+        red_hit_total =values(red_hit_total),
+        blue_hit_total =values(blue_hit_total),
+        winning_amount =values(winning_amount),
         modify_time =values(modify_time)
     </insert>
 </mapper>

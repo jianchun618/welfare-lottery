@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.service.IService;
 import com.fmbank.welfarelottery.entity.LotteryRecord;
 import com.fmbank.welfarelottery.response.model.CountStatisticsResult;
 
-import java.util.List;
-
 /**
  *
  */
@@ -18,5 +16,7 @@ public interface ILotteryRecordService extends IService<LotteryRecord> {
     CountStatisticsResult showRecordSizeAndMapSize();
 
     Integer dataRandom(Integer integer);
+
+    void cashAPrize();
 
 }

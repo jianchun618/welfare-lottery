@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -23,6 +24,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("t_buy_record")
+@ToString
 public class BuyRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +44,10 @@ public class BuyRecord implements Serializable {
      * 红球
      */
     private String red;
+    /**
+     * 当期开奖红球结果
+     */
+    private String result;
 
     /**
      * 红球命中个数
@@ -61,7 +67,7 @@ public class BuyRecord implements Serializable {
     /**
      * 中奖金额
      */
-    private Integer winningAmount;
+    private double winningAmount;
 
     /**
      * 创建时间
