@@ -11,6 +11,7 @@ import com.fmbank.welfarelottery.service.IDataGateway;
 import com.fmbank.welfarelottery.service.ILotteryRecordService;
 import com.fmbank.welfarelottery.util.BallRandomUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -89,9 +90,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public void cashAPrize() {
+    public double cashAPrize() {
+        double winningAmount = 0;
         LotteryRecord latestRecord = lotteryRecordMapper.latestRecord();
-        log.info("最近的开奖记录-[{}]",latestRecord);
+        log.info("最近的开奖记录-[{}]", latestRecord);
         String red = latestRecord.getRed();
         String[] split = red.split(",");
         //中奖数据
@@ -107,17 +109,27 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             Integer redCount = 0;
             Integer blueCount = 0;
             String[] buyReds = buyRecord.getRed().split(",");
+            ArrayList<String> hitNumbers = new ArrayList<>();
             for (String buyRed : buyReds) {
-                if (reds.contains(buyRed)) redCount++;
+                if (reds.contains(buyRed)) {
+                    hitNumbers.add(buyRed);
+                    redCount++;
+                }
             }
             if (latestRecord.getBlue().equals(buyRecord.getBlue())) blueCount++;
             buyRecord.setRedHitTotal(redCount);
             buyRecord.setBlueHitTotal(blueCount);
-            buyRecord.setWinningAmount(getAmount(redCount, blueCount));
+            if (hitNumbers.size() > 0) {
+                buyRecord.setHitNumber(StringUtils.join(hitNumbers, ","));
+            }
+            double amount = getAmount(redCount, blueCount);
+            winningAmount = winningAmount + amount;
+            buyRecord.setWinningAmount(amount);
             buyRecord.setResult(latestRecord.getRed());
         }
         buyRecordMapper.insertBatchs(buyRecords);
         log.info("开奖核对成功！");
+        return winningAmount;
     }
 
     private double getAmount(Integer redCount, Integer blueCount) {

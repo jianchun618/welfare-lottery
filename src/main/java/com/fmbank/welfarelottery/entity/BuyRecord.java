@@ -53,6 +53,10 @@ public class BuyRecord implements Serializable {
      * 红球命中个数
      */
     private Integer redHitTotal;
+    /**
+     * 红球击中号
+     */
+    private String hitNumber;
 
     /**
      * 篮球

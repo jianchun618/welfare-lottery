@@ -53,7 +53,6 @@ public class LotteryRecordController {
     @GetMapping("/cashAPrize")
     @ApiOperation("统计当期中奖情况")
     public Result cashAPrize() {
-        iLotteryRecordService.cashAPrize();
-        return Result.success();
+        return Result.success("本期中奖今金额：" + iLotteryRecordService.cashAPrize() + "元");
     }
 }
