@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 /**
  * <p>
- * 开奖记录表 前端控制器
+ * 数据记录服务 前端控制器
  * </p>
  *
  * @author jianchun
@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/lotteryRecord")
-@Api(tags = "开奖记录服务类")
+@Api(tags = "数据记录服务类")
 public class LotteryRecordController {
     @Resource
     ILotteryRecordService iLotteryRecordService;
@@ -33,7 +33,7 @@ public class LotteryRecordController {
     }
 
     @GetMapping("/getNewLeastRecord")
-    @ApiOperation("获取最新开奖记录")
+    @ApiOperation("获取最新记录")
     public Result getNewLeastRecord() {
         return Result.success(iLotteryRecordService.showLatestRecordInfo());
     }
@@ -51,8 +51,8 @@ public class LotteryRecordController {
     }*/
 
     @GetMapping("/cashAPrize")
-    @ApiOperation("统计当期中奖情况")
+    @ApiOperation("统计当期盈利金额")
     public Result cashAPrize() {
-        return Result.success("本期中奖今金额：" + iLotteryRecordService.cashAPrize() + "元");
+        return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize() + "元");
     }
 }
