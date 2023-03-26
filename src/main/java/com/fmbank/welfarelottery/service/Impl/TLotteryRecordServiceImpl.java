@@ -91,14 +91,20 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
 
     @Override
     public Integer dataInit() {
-        //获取近一起的16条数据
+        //组装查询包装类，是否初始化过数据检查。
+        EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
+        String dataString = getDateString();
+        queryWrapper.eq("date", dataString);
+        List<BuyRecord> initedData = buyRecordMapper.selectList(queryWrapper);
+        if(initedData.size()>0){
+            throw new RuntimeException("当日已完成数据的初始化，请检查！");
+        }
+        //获取近一期的16条数据
         List<BuyRecord> buyRecords = buyRecordMapper.latestBuyRecord();
         List<BuyRecord> addLists = new ArrayList<>();
-        //构建的的购买记录并设置相应的值
+        //构建当日购买记录并设置相应的值
         for (BuyRecord his : buyRecords) {
             BuyRecord newRecord = new BuyRecord();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String dataString = sdf.format(new Date());
             newRecord.setDate(dataString);
             newRecord.setRed(his.getRed());
             newRecord.setBlue(his.getBlue());
@@ -106,6 +112,11 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         }
         //执行入库操作
         return buyRecordMapper.insertBatchs(addLists);
+    }
+
+    private String getDateString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(new Date());
     }
 
     @Override
@@ -121,8 +132,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             reds.add(s);
         }
         EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String dataString = sdf.format(new Date());
+        String dataString = getDateString();
         queryWrapper.eq("date", dataString);
         List<BuyRecord> buyRecords = buyRecordMapper.selectList(queryWrapper);
         for (BuyRecord buyRecord : buyRecords) {
