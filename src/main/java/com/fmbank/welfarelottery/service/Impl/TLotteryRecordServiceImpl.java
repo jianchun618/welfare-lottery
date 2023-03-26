@@ -157,7 +157,11 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             buyRecord.setWinningAmount(amount);
             buyRecord.setResult(latestRecord.getRed());
         }
-        buyRecordMapper.insertBatchs(buyRecords);
+        if(buyRecords.size()>0){
+            buyRecordMapper.insertBatchs(buyRecords);
+        }else {
+            throw new RuntimeException("未获取到当日购买的数据。。。");
+        }
         log.info("开奖核对成功！");
         return winningAmount;
     }
