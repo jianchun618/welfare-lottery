@@ -20,4 +20,5 @@ import java.util.List;
 public interface BuyRecordMapper extends BaseMapper<BuyRecord> {
     Integer insertBatchs(@Param(value = "records") List<BuyRecord> records);
 
+    List<BuyRecord> latestBuyRecord();
 }

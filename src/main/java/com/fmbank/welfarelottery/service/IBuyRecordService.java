@@ -2,6 +2,9 @@ package com.fmbank.welfarelottery.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.fmbank.welfarelottery.entity.BuyRecord;
+import com.fmbank.welfarelottery.entity.LotteryRecord;
+
+import java.util.List;
 
 /**
  * <p>

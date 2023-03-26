@@ -17,6 +17,8 @@ public interface ILotteryRecordService extends IService<LotteryRecord> {
 
     Integer dataRandom(Integer integer);
 
+    Integer dataInit();
+
     double cashAPrize();
 
 }

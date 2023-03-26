@@ -51,4 +51,8 @@
         winning_amount =values(winning_amount),
         modify_time =values(modify_time)
     </insert>
+
+    <select id="latestBuyRecord" resultType="com.fmbank.welfarelottery.entity.BuyRecord">
+      select * from t_buy_record  where date=(select MAX(date) from t_lottery_record )
+    </select>
 </mapper>

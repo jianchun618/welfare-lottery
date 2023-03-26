@@ -32,6 +32,18 @@ public class LotteryRecordController {
         return Result.success(iLotteryRecordService.dataToDb(integer));
     }
 
+    @GetMapping("/dataInit")
+    @ApiOperation("当日数据初始化")
+    public Result dataInit() {
+        return Result.success(iLotteryRecordService.dataInit());
+    }
+
+    @GetMapping("/cashAPrize")
+    @ApiOperation("统计当期盈利金额")
+    public Result cashAPrize() {
+        return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize() + "元");
+    }
+
     @GetMapping("/getNewLeastRecord")
     @ApiOperation("获取最新记录")
     public Result getNewLeastRecord() {
@@ -50,9 +62,4 @@ public class LotteryRecordController {
         return Result.success(iLotteryRecordService.dataRandom(integer));
     }*/
 
-    @GetMapping("/cashAPrize")
-    @ApiOperation("统计当期盈利金额")
-    public Result cashAPrize() {
-        return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize() + "元");
-    }
 }

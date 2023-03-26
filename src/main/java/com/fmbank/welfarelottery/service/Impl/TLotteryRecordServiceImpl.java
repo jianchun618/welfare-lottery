@@ -90,6 +90,25 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
+    public Integer dataInit() {
+        //获取近一起的16条数据
+        List<BuyRecord> buyRecords = buyRecordMapper.latestBuyRecord();
+        List<BuyRecord> addLists = new ArrayList<>();
+        //构建的的购买记录并设置相应的值
+        for (BuyRecord his : buyRecords) {
+            BuyRecord newRecord = new BuyRecord();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dataString = sdf.format(new Date());
+            newRecord.setDate(dataString);
+            newRecord.setRed(his.getRed());
+            newRecord.setBlue(his.getBlue());
+            addLists.add(newRecord);
+        }
+        //执行入库操作
+        return buyRecordMapper.insertBatchs(addLists);
+    }
+
+    @Override
     public double cashAPrize() {
         double winningAmount = 0;
         LotteryRecord latestRecord = lotteryRecordMapper.latestRecord();
@@ -103,7 +122,8 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         }
         EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        queryWrapper.eq("date", sdf.format(new Date()));
+        String dataString = sdf.format(new Date());
+        queryWrapper.eq("date", dataString);
         List<BuyRecord> buyRecords = buyRecordMapper.selectList(queryWrapper);
         for (BuyRecord buyRecord : buyRecords) {
             Integer redCount = 0;
