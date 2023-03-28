@@ -166,6 +166,14 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         return winningAmount;
     }
 
+    @Override
+    public List<BuyRecord> dateData() {
+        EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
+        String dataString = getDateString();
+        queryWrapper.eq("date", dataString);
+        return buyRecordMapper.selectList(queryWrapper);
+    }
+
     private double getAmount(Integer redCount, Integer blueCount) {
         /*一等奖*/
         if ((redCount == 6 && blueCount == 1)) return 1000000;
