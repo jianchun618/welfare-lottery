@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmbank.welfarelottery.mapper.TThreeDHisSummaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fmbank.welfarelottery.entity.TThreeDHisSummary">
+        <id column="id" property="id"/>
+        <result column="calculate_code" property="calculateCode"/>
+        <result column="lottery_number" property="lotteryNumber"/>
+        <result column="code" property="code"/>
+        <result column="date" property="date"/>
+        <result column="period" property="period"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, calculate_code, lottery_number, code, `date`, period, create_time, modify_time
+    </sql>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into t_three_d_his_summary
+        ( calculate_code, lottery_number, code, `date`,period,create_time,modify_time)
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (
+            #{record.calculateCode},
+            #{record.lotteryNumber},
+            #{record.code},
+            #{record.date},
+            #{record.period},
+            #{record.createTime},
+            #{record.modifyTime}
+            )
+        </foreach>
+        on duplicate key update
+        lottery_number=values(lottery_number),
+        calculate_code=values(calculate_code),
+        code=values(code),
+        `date` =values(`date`),
+        period =values(period),
+        modify_time =values(modify_time)
+    </insert>
+
+    <select id="selectLastTenData" resultType="com.fmbank.welfarelottery.entity.TThreeDHisSummary">
+      select * from t_three_d_his_summary  order by period desc limit 10
+    </select>
+
+</mapper>

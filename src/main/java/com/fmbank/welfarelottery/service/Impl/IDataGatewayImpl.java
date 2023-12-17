@@ -3,6 +3,7 @@ package com.fmbank.welfarelottery.service.Impl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fmbank.welfarelottery.entity.LotteryRecord;
+import com.fmbank.welfarelottery.entity.TThreeDRecord;
 import com.fmbank.welfarelottery.service.IDataGateway;
 import com.fmbank.welfarelottery.util.BallRandomUtil;
 import com.fmbank.welfarelottery.util.HttpClientUtil;
@@ -77,6 +78,57 @@ public class IDataGatewayImpl implements IDataGateway {
         return null;
     }
 
+    @Override
+    public List<TThreeDRecord> getThreeDByYear(String yearStart, String yearEnd) {
+        log.info("yearStart-[{}]- and yearEnd-[{}]",yearStart,yearEnd);
+        String url = "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice";
+        HashMap<String, String> params = get3dDataRequestParamMap(yearStart,yearEnd);
+        HashMap<String, Object> header = getStringObjectHashMap();
+        //执行调用外围接口
+        String response = httpClientUtil.doGet(url, header, params);
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        //数据临时存储
+        ArrayList<TThreeDRecord> tThreeDRecords = new ArrayList<>();
+        if (jsonObject.containsKey("result")) {
+            String result = jsonObject.get("result").toString();
+            JSONArray objects = JSONObject.parseArray(result);
+            for (int i = 0; i < objects.size(); i++) {
+                String s = objects.get(i).toString();
+                JSONObject oneData = JSONObject.parseObject(s);
+                TThreeDRecord lotteryRecord = new TThreeDRecord();
+                lotteryRecord.setCreateTime(new Date());
+                lotteryRecord.setModifyTime(new Date());
+                lotteryRecord.setCode(oneData.get("code").toString());//期号
+                lotteryRecord.setDate(oneData.get("date").toString().substring(0, 10));//日期
+                lotteryRecord.setWeek(oneData.get("week").toString());//星期几
+                lotteryRecord.setLotteryNumber(oneData.get("red").toString().replace(",",""));//开奖号码
+                tThreeDRecords.add(lotteryRecord);
+            }
+        }
+        tThreeDRecords.sort(Comparator.comparing(TThreeDRecord::getDate));
+
+        if (tThreeDRecords.size() > 0) {
+            log.info("本次获取到-[{}]条数据,开始日期-[{}],结束日期-[{}]", tThreeDRecords.size(), yearStart,yearEnd);
+        } else {
+            log.info("本次获取到-[{}]条数据", 0);
+        }
+        return tThreeDRecords;
+    }
+
+    private HashMap<String, Object> getStringObjectHashMap() {
+        HashMap<String, Object> header = new HashMap<>();
+        header.put("Accept", "application/json, text/javascript, */*; q=0.01");
+        header.put("Accept-Encoding", "gzip, deflate, br");
+        header.put("Accept-Language", "zh-CN,zh;q=0.9");
+        header.put("Connection", "keep-alive");
+        header.put("Cookie", "HMF_CI=2adcbc4a606bb355d6693146d6c8608ce6d2818e221e4091aef8c9e8fe8637617cf74ce2816ad471236c39f4bf657adfeac17625d80dab8f45cce342757a82d4e2; 21_vq=8");
+        header.put("Host", "www.cwl.gov.cn");
+        header.put("Referer", "http://www.cwl.gov.cn/ygkj/wqkjgg/");
+        header.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36");
+        header.put("X-Requested-With", "XMLHttpRequest");
+        return header;
+    }
+
     /**
      * 组装数据请求参数信息
      *
@@ -87,6 +139,21 @@ public class IDataGatewayImpl implements IDataGateway {
         params.put("name", "ssq");
         params.put("pageNo", "1");
         params.put("pageSize", String.valueOf(integer));
+        params.put("systemType", "PC");
+        return params;
+    }
+    /**
+     * 组装数据请求参数信息
+     *
+     * @return java.util.HashMap
+     */
+    private HashMap<String, String> get3dDataRequestParamMap(String yearStart,String yearEnd) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("name", "3d");
+        params.put("dayStart", yearStart);
+        params.put("dayEnd", yearEnd);
+        params.put("pageNo", "1");
+        params.put("pageSize", "1000");
         params.put("systemType", "PC");
         return params;
     }

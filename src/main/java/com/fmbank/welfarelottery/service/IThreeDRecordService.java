@@ -3,17 +3,16 @@ package com.fmbank.welfarelottery.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.fmbank.welfarelottery.entity.BuyRecord;
 import com.fmbank.welfarelottery.entity.LotteryRecord;
+import com.fmbank.welfarelottery.response.model.CountStatisticsResult;
 
 import java.util.List;
 
 /**
- * <p>
- * 购买记录表 服务类
- * </p>
  *
- * @author jianchun
- * @since 2023-03-19
  */
-public interface IBuyRecordService extends IService<BuyRecord> {
+public interface IThreeDRecordService extends IService<LotteryRecord> {
 
+    Integer dataToDbByYear(String year);
+
+    Integer buyDataToDb(String year);
 }

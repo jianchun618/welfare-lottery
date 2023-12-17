@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmbank.welfarelottery.mapper.TThreeDBuyRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fmbank.welfarelottery.entity.TThreeDBuyRecord">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="date" property="date" />
+        <result column="lottery_number" property="lotteryNumber" />
+        <result column="buy_number" property="buyNumber" />
+        <result column="win_status" property="winStatus" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_time" property="modifyTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, `date`, lottery_number, buy_number, win_status, create_time, modify_time
+    </sql>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into t_three_d_buy_record
+        ( code, `date`, lottery_number, buy_number,win_status,create_time,modify_time)
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (
+            #{record.code},
+            #{record.date},
+            #{record.lotteryNumber},
+            #{record.buyNumber},
+            #{record.winStatus},
+            #{record.createTime},
+            #{record.modifyTime}
+            )
+        </foreach>
+        on duplicate key update
+        `date`=values(`date`),
+        code=values(code),
+        lottery_number =values(lottery_number),
+        buy_number =values(buy_number),
+        win_status =values(win_status),
+        modify_time =values(modify_time)
+    </insert>
+
+</mapper>
