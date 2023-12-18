@@ -35,7 +35,7 @@ public class TThreeDHisSummary implements Serializable {
     /**
      * 计算期数
      */
-    private String calculateCode;
+    private String calculateDate;
 
     /**
      * 奖号:001-999所有号码
@@ -55,7 +55,7 @@ public class TThreeDHisSummary implements Serializable {
     /**
      * 历史未开奖的期数（现在的期号减去历史开奖的期号）
      */
-    private String period;
+    private Integer period;
 
     /**
      * 创建时间

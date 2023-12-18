@@ -27,11 +27,11 @@ CREATE TABLE `t_three_d_buy_record` (
 
 CREATE TABLE `t_three_d_his_summary` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `calculate_code` varchar(32) DEFAULT NULL COMMENT '计算期数',
+  `calculate_date` varchar(32) DEFAULT NULL COMMENT '计算期数',
   `lottery_number` varchar(32) DEFAULT NULL COMMENT '奖号:001-999所有号码',
   `code` varchar(32) DEFAULT NULL COMMENT '历史开奖期号',
   `date` varchar(32) DEFAULT NULL COMMENT '历史开奖日期',
-  `period` varchar(32) DEFAULT NULL COMMENT '历史未开奖的期数（现在的期号减去历史开奖的期号）',
+  `period` int DEFAULT NULL COMMENT '历史未开奖的期数（现在的期号减去历史开奖的期号）',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),

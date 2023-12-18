@@ -43,7 +43,7 @@
       select * from t_three_d_record  where `date` like  REPLACE(CONCAT(#{year},'%'), '_', '\\_') order by `date`
     </select>
     <select id="selectDateByBeforeCode" resultType="com.fmbank.welfarelottery.entity.TThreeDRecord">
-      select * from t_three_d_record  where code   &lt; #{code} and lottery_number= #{lotteryNumber} limit 1
+      select * from t_three_d_record  where `date`   &lt;= #{date} and lottery_number= #{lotteryNumber} order by `date` desc limit 1
     </select>
     <select id="selectByDate" resultType="com.fmbank.welfarelottery.entity.TThreeDRecord">
       select * from t_three_d_record  where `date`= #{date}  limit 1

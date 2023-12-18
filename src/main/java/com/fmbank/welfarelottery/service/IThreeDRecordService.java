@@ -15,4 +15,6 @@ public interface IThreeDRecordService extends IService<LotteryRecord> {
     Integer dataToDbByYear(String year);
 
     Integer buyDataToDb(String year);
+
+    Object calculateByDate(String date);
 }

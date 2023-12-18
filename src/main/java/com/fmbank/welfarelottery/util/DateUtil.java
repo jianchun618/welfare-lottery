@@ -3,6 +3,7 @@ package com.fmbank.welfarelottery.util;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -164,14 +165,42 @@ public class DateUtil {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(specifiedDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         return dateFormat.format(calendar.getTime());
     }
-
+    /**
+     * 两日日期相差的天数
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static Integer getCountOfTwoDay(String startDate,String endDate)  {
+        DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
+        int i=0;
+        try {
+            Date star = dft.parse(startDate);//开始时间
+            Date endDay=dft.parse(endDate);//结束时间
+            Date nextDay=star;
+            while(nextDay.before(endDay)){//当明天不在结束时间之前是终止循环
+                Calendar cld = Calendar.getInstance();
+                cld.setTime(star);
+                cld.add(Calendar.DATE, 1);
+                star = cld.getTime();
+                //获得下一天日期字符串
+                nextDay = star;
+                i++;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
 
     public static void main(String[] args) {
         System.out.println("=========current year=========");
+
+
         System.out.println(getLastOfDay("2019-09-29"));
         Date currentYearStart = getCurrentFirstOfYear();
         System.out.println(formatDateTime(currentYearStart));

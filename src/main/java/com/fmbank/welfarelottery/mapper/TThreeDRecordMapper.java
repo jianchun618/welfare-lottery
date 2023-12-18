@@ -22,6 +22,6 @@ public interface TThreeDRecordMapper extends BaseMapper<TThreeDRecord> {
     List<TThreeDRecord> selectByYear(@Param(value = "year") String year);
     TThreeDRecord selectByDate(@Param(value = "date") String date);
     /*之前的期数数据*/
-    TThreeDRecord selectDateByBeforeCode(@Param(value = "code") String code,@Param(value = "lotteryNumber") String lotteryNumber);
+    TThreeDRecord selectDateByBeforeCode(@Param(value = "date") String date,@Param(value = "lotteryNumber") String lotteryNumber);
 
 }

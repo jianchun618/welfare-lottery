@@ -38,4 +38,10 @@ public class LotteryDController {
         return Result.success(iThreeDRecordService.buyDataToDb(year));
     }
 
+    @GetMapping("/calculateByDate")
+    @ApiOperation("某日购买号码计算")
+    public Result calculateByDate(String date) {
+        return Result.success(iThreeDRecordService.calculateByDate(date));
+    }
+
 }
