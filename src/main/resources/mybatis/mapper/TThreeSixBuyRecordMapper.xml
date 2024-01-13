@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fmbank.welfarelottery.mapper.TThreeSixBuyRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fmbank.welfarelottery.entity.TThreeSixBuyRecord">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="date" property="date"/>
+        <result column="lottery_number" property="lotteryNumber"/>
+        <result column="buy_number" property="buyNumber"/>
+        <result column="buy_amount" property="buyAmount"/>
+        <result column="buy_double" property="buyDouble"/>
+        <result column="win_status" property="winStatus"/>
+        <result column="win_number" property="winNumber"/>
+        <result column="win_amount" property="winAmount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, `date`, lottery_number, buy_number, buy_amount, buy_double, win_status,win_number, win_amount,
+         create_time, modify_time
+    </sql>
+
+    <insert id="insertBatchs" parameterType="java.util.List">
+        insert into t_three_six_buy_record
+        ( code, `date`, lottery_number, buy_number, buy_amount, buy_double, win_status,win_number, win_amount,
+        create_time, modify_time)
+        values
+        <foreach collection="records" item="record" index="index" separator=",">
+            (
+            #{record.code},
+            #{record.date},
+            #{record.lotteryNumber},
+            #{record.buyNumber},
+            #{record.buyAmount},
+            #{record.buyDouble},
+            #{record.winStatus},
+            #{record.winNumber},
+            #{record.winAmount},
+            #{record.createTime},
+            #{record.modifyTime}
+            )
+        </foreach>
+        on duplicate key update
+        `date`=values(`date`),
+        lottery_number=values(lottery_number),
+        buy_number=values(buy_number),
+        buy_amount=values(buy_amount),
+        buy_double=values(buy_double),
+        win_status=values(win_status),
+        win_amount=values(win_amount),
+        modify_time =values(modify_time)
+    </insert>
+
+
+</mapper>

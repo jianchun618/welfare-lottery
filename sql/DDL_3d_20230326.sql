@@ -37,3 +37,21 @@ CREATE TABLE `t_three_d_his_summary` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_three_d_his_summary_UN` (`lottery_number`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='奖号历史未开奖的期数统计';
+
+
+CREATE TABLE `t_three_six_buy_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `code` varchar(32) NOT NULL COMMENT '期号',
+  `date` varchar(32) DEFAULT NULL COMMENT '日期',
+  `lottery_number` varchar(32) DEFAULT NULL COMMENT '开奖号码',
+  `buy_number` varchar(200) DEFAULT NULL COMMENT '定值30组，概率25%（用于购买）',
+  `buy_amount` INTEGER DEFAULT NULL COMMENT '购买金额',
+  `buy_double` INTEGER DEFAULT NULL COMMENT '购买倍数',
+  `win_status` varchar(32) DEFAULT NULL COMMENT '本期是否中奖0未中奖1已中奖',
+  `win_number` varchar(32) DEFAULT NULL COMMENT '中奖号码',
+  `win_amount` INTEGER DEFAULT NULL COMMENT '中奖金额金额',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `t_three_six_buy_record_UN` (`date`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='3组六购买记录表';

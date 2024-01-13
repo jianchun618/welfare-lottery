@@ -1,6 +1,7 @@
 package com.fmbank.welfarelottery.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.fmbank.welfarelottery.entity.LotteryRecord;
 import com.fmbank.welfarelottery.entity.TThreeDRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

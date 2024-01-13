@@ -74,8 +74,8 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
             }*/
             tThreeDBuyRecord.setBuyNumber(lastTenNum);
             //是否中奖
-            //t-1 date
-            String lastOfDay = DateUtil.getLastOfDay(tThreeDRecord.getDate());
+            //t+1 date
+            String lastOfDay = DateUtil.getNextOfDay(tThreeDRecord.getDate(),1);
             //获取t+1的数据，
             TThreeDRecord nextPeriod = tThreeDRecordMapper.selectByDate(lastOfDay);
             if (!ObjectUtils.isEmpty(nextPeriod) &&nextPeriod.getLotteryNumber().equals(tThreeDBuyRecord.getBuyNumber())) {
@@ -99,7 +99,7 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
     }
 
     public static void main(String[] args) {
-        System.out.println(DateUtil.getLastOfDay("2022-03-25"));
+        System.out.println(DateUtil.getNextOfDay("2022-03-25",1));
     }
 
     @Override

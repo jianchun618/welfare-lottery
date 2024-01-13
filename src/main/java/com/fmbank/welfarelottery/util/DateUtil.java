@@ -154,7 +154,7 @@ public class DateUtil {
      * @param date 日期
      * @return Date
      */
-    public static String getLastOfDay(String date)  {
+    public static String getNextOfDay(String date,int offset) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN);
         Date specifiedDate = null;
         try {
@@ -165,24 +165,26 @@ public class DateUtil {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(specifiedDate);
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, offset);
 
         return dateFormat.format(calendar.getTime());
     }
+
     /**
      * 两日日期相差的天数
+     *
      * @param startDate
      * @param endDate
      * @return
      */
-    public static Integer getCountOfTwoDay(String startDate,String endDate)  {
+    public static Integer getCountOfTwoDay(String startDate, String endDate) {
         DateFormat dft = new SimpleDateFormat("yyyy-MM-dd");
-        int i=0;
+        int i = 0;
         try {
             Date star = dft.parse(startDate);//开始时间
-            Date endDay=dft.parse(endDate);//结束时间
-            Date nextDay=star;
-            while(nextDay.before(endDay)){//当明天不在结束时间之前是终止循环
+            Date endDay = dft.parse(endDate);//结束时间
+            Date nextDay = star;
+            while (nextDay.before(endDay)) {//当明天不在结束时间之前是终止循环
                 Calendar cld = Calendar.getInstance();
                 cld.setTime(star);
                 cld.add(Calendar.DATE, 1);
@@ -199,6 +201,7 @@ public class DateUtil {
 
     /**
      * 获取一年的所有日期
+     *
      * @param year
      * @return
      * @throws ParseException
@@ -215,6 +218,7 @@ public class DateUtil {
         }
         return dates;
     }
+
     public static void main(String[] args) {
         List<String> allDatesInYear = getAllDatesInYear(2022);
         System.out.println(allDatesInYear);
@@ -222,7 +226,8 @@ public class DateUtil {
         System.out.println("=========current year=========");
 
 
-        System.out.println(getLastOfDay("2019-09-29"));
+        System.out.println(getNextOfDay("2019-09-29",1));
+        System.out.println(getNextOfDay("2019-09-29",-1));
         Date currentYearStart = getCurrentFirstOfYear();
         System.out.println(formatDateTime(currentYearStart));
         Date currentYearEnd = getCurrentLastOfYear();
