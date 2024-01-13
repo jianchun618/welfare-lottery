@@ -62,10 +62,10 @@ public class LotteryRecordController {
         return Result.success(iLotteryRecordService.showRecordSizeAndMapSize());
     }
 
-/*    @GetMapping("/dataRandom")
+    @GetMapping("/dataRandom")
     @ApiOperation("系统生成16条购买数据")
     public Result dataRandom(Integer integer) {
         return Result.success(iLotteryRecordService.dataRandom(integer));
-    }*/
+    }
 
 }

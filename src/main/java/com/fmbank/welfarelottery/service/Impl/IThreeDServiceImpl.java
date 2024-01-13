@@ -65,18 +65,37 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
             tThreeDBuyRecord.setModifyTime(new Date());
             //计算下期最大未开奖期数前十个号
             String lastTenNum = getLastTenNum(tThreeDRecord.getDate());
+            /*StringBuilder builder = new StringBuilder("");
+            for (int i = 0; i <5 ; i++) {
+                String lotteryNumber;
+                int number=(int)(Math.random()*1000);
+                lotteryNumber = getNumberString(number);
+                builder.append(lotteryNumber).append(",");
+            }*/
             tThreeDBuyRecord.setBuyNumber(lastTenNum);
             //是否中奖
             //t-1 date
             String lastOfDay = DateUtil.getLastOfDay(tThreeDRecord.getDate());
             //获取t+1的数据，
             TThreeDRecord nextPeriod = tThreeDRecordMapper.selectByDate(lastOfDay);
-            if (!ObjectUtils.isEmpty(nextPeriod) && nextPeriod.getLotteryNumber().equals(tThreeDBuyRecord.getBuyNumber())) {
+            if (!ObjectUtils.isEmpty(nextPeriod) &&nextPeriod.getLotteryNumber().equals(tThreeDBuyRecord.getBuyNumber())) {
                 tThreeDBuyRecord.setWinStatus("1");
             }
             tThreeDBuyRecords.add(tThreeDBuyRecord);
         }
         return tThreeDBuyRecordMapper.insertBatchs(tThreeDBuyRecords);
+    }
+
+    private String getNumberString(int number) {
+        String lotteryNumber;
+        if (number < 10) {
+            lotteryNumber = String.format("00%s", number);
+        } else if (number < 99) {
+            lotteryNumber = String.format("0%s", number);
+        } else {
+            lotteryNumber = String.format("%s", number);
+        }
+        return lotteryNumber;
     }
 
     public static void main(String[] args) {
@@ -98,14 +117,7 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
         //计算下期最大未开奖期数前十个号
         ArrayList<TThreeDHisSummary> tThreeDHisSummaries = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            String lotteryNumber = "-1";
-            if (i < 10) {
-                lotteryNumber = String.format("00%s", i);
-            } else if (i < 99) {
-                lotteryNumber = String.format("0%s", i);
-            } else {
-                lotteryNumber = String.format("%s", i);
-            }
+            String lotteryNumber = getNumberString(i);
             TThreeDRecord tThreeDRecords = tThreeDRecordMapper.selectDateByBeforeCode(date, lotteryNumber);
             if (!ObjectUtils.isEmpty(tThreeDRecords)) {
                 TThreeDHisSummary tThreeDHisSummary = new TThreeDHisSummary();
@@ -114,7 +126,7 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
                 tThreeDHisSummary.setCode(tThreeDRecords.getCode());
                 tThreeDHisSummary.setDate(tThreeDRecords.getDate());
                 //日期相差的天数
-                tThreeDHisSummary.setPeriod(DateUtil.getCountOfTwoDay(tThreeDRecords.getDate(),date));
+                tThreeDHisSummary.setPeriod(DateUtil.getCountOfTwoDay(tThreeDRecords.getDate(), date));
                 tThreeDHisSummary.setCreateTime(new Date());
                 tThreeDHisSummary.setModifyTime(new Date());
                 tThreeDHisSummaries.add(tThreeDHisSummary);

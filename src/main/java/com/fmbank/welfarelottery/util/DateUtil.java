@@ -149,7 +149,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取指定日期前一天的日期
+     * 获取指定日期后一天的日期
      *
      * @param date 日期
      * @return Date
@@ -197,7 +197,28 @@ public class DateUtil {
         return i;
     }
 
+    /**
+     * 获取一年的所有日期
+     * @param year
+     * @return
+     * @throws ParseException
+     */
+    public static List<String> getAllDatesInYear(int year) {
+        List<String> dates = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, 0, 1);
+
+        while (calendar.get(Calendar.YEAR) == year) {
+            dates.add(dateFormat.format(calendar.getTime()));
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return dates;
+    }
     public static void main(String[] args) {
+        List<String> allDatesInYear = getAllDatesInYear(2022);
+        System.out.println(allDatesInYear);
+
         System.out.println("=========current year=========");
 
 
