@@ -39,7 +39,8 @@ CREATE TABLE `t_three_d_his_summary` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='奖号历史未开奖的期数统计';
 
 
-CREATE TABLE `t_three_six_buy_record` (
+ drop table t_three_six_buy_record;
+ CREATE TABLE `t_three_six_buy_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `code` varchar(32) NOT NULL COMMENT '期号',
   `date` varchar(32) DEFAULT NULL COMMENT '日期',
@@ -50,6 +51,7 @@ CREATE TABLE `t_three_six_buy_record` (
   `win_status` varchar(32) DEFAULT NULL COMMENT '本期是否中奖0未中奖1已中奖',
   `win_number` varchar(32) DEFAULT NULL COMMENT '中奖号码',
   `win_amount` INTEGER DEFAULT NULL COMMENT '中奖金额金额',
+  `periods` INTEGER DEFAULT NULL COMMENT '期数',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),

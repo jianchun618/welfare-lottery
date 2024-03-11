@@ -14,6 +14,7 @@
         <result column="win_status" property="winStatus"/>
         <result column="win_number" property="winNumber"/>
         <result column="win_amount" property="winAmount"/>
+        <result column="periods" property="periods"/>
         <result column="create_time" property="createTime"/>
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
@@ -21,12 +22,12 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, code, `date`, lottery_number, buy_number, buy_amount, buy_double, win_status,win_number, win_amount,
-         create_time, modify_time
+         periods,create_time, modify_time
     </sql>
 
     <insert id="insertBatchs" parameterType="java.util.List">
         insert into t_three_six_buy_record
-        ( code, `date`, lottery_number, buy_number, buy_amount, buy_double, win_status,win_number, win_amount,
+        ( code, `date`, lottery_number, buy_number, buy_amount, buy_double, win_status,win_number, win_amount,periods,
         create_time, modify_time)
         values
         <foreach collection="records" item="record" index="index" separator=",">
@@ -40,6 +41,7 @@
             #{record.winStatus},
             #{record.winNumber},
             #{record.winAmount},
+            #{record.periods},
             #{record.createTime},
             #{record.modifyTime}
             )
@@ -52,6 +54,7 @@
         buy_double=values(buy_double),
         win_status=values(win_status),
         win_amount=values(win_amount),
+        periods=values(periods),
         modify_time =values(modify_time)
     </insert>
 

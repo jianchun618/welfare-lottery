@@ -74,7 +74,10 @@ public class TThreeSixBuyRecord implements Serializable {
      * 中奖金额金额
      */
     private Integer winAmount;
-
+    /**
+     * 中奖金额金额
+     */
+    private Integer periods;
     /**
      * 创建时间
      */
