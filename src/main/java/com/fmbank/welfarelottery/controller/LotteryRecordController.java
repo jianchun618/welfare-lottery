@@ -39,25 +39,25 @@ public class LotteryRecordController {
     }
 
     @GetMapping("/dataInit")
-    @ApiOperation("根据日期购初始化买数据(日期格式:yyyy-MM-dd)")
+    @ApiOperation("初始化日期购买数据,格式:yyyy-MM-dd)")
     public Result dataInit(String dataString) {
         return Result.success(iLotteryRecordService.dataInit(dataString));
     }
 
     @GetMapping("/cashAPrize")
-    @ApiOperation("统计当期盈利金额")
-    public Result cashAPrize() {
-        return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize() + "元");
+    @ApiOperation("日期统计盈利,日期格式:yyyy-MM-dd")
+    public Result cashAPrize( String date) {
+        return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize(date) + "元");
     }
 
     @GetMapping("/currentDateData")
-    @ApiOperation("当日数据详情")
-    public Result dateData() {
-        return Result.success(iLotteryRecordService.dateData());
+    @ApiOperation("日期获取购买数据,日期格式:yyyy-MM-dd")
+    public Result dateData(String dataDate) {
+        return Result.success(iLotteryRecordService.dateData(dataDate));
     }
 
     @GetMapping("/dataRandom")
-    @ApiOperation("根据日期，随机生成16条购买数据")
+    @ApiOperation("日期，随机生成16条购买数据")
     public Result dataRandom(Integer integer, String dataDate) {
         return Result.success(iLotteryRecordService.dataRandom(integer, dataDate));
     }

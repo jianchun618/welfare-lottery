@@ -22,7 +22,7 @@ public interface ILotteryRecordService extends IService<LotteryRecord> {
 
     Integer dataInit(String dataString);
 
-    double cashAPrize();
+    double cashAPrize(String date);
 
-    List<BuyRecord> dateData();
+    List<BuyRecord> dateData(String dataDate);
 }

@@ -13,6 +13,7 @@ import com.fmbank.welfarelottery.util.BallRandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -64,7 +65,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public Integer dataRandom(Integer integer,String dataDate) {
+    public Integer dataRandom(Integer integer, String dataDate) {
         List<String> balls = BallRandomUtil.getDoubleColorBallNumber(integer);
         ArrayList<BuyRecord> buyRecords = new ArrayList<>();
         for (int i = 0; i < balls.size(); i++) {
@@ -96,7 +97,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         //String dataString = getDateString();
         queryWrapper.eq("date", dataString);
         List<BuyRecord> initedData = buyRecordMapper.selectList(queryWrapper);
-        if(initedData.size()>0){
+        if (initedData.size() > 0) {
             throw new RuntimeException("当日已完成数据的初始化，请检查！");
         }
         //获取近一期的16条数据
@@ -111,7 +112,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             addLists.add(newRecord);
         }
         //执行入库操作
-        return buyRecordMapper.insertBatchs(addLists);
+        if(addLists.size()>0){
+            return buyRecordMapper.insertBatchs(addLists);
+        }
+        return 0;
     }
 
     private String getDateString() {
@@ -120,10 +124,20 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public double cashAPrize() {
+    public double cashAPrize(String date) {
         double winningAmount = 0;
-        LotteryRecord latestRecord = lotteryRecordMapper.latestRecord();
-        log.info("最近的开奖记录-[{}]", latestRecord);
+        EntityWrapper<LotteryRecord> queryWrapperLotteryRecord = new EntityWrapper<>();
+        queryWrapperLotteryRecord.eq("date", date);
+
+//        LotteryRecord latestRecord = lotteryRecordMapper.latestRecord();
+        List<LotteryRecord> lotteryRecords = lotteryRecordMapper.selectList(queryWrapperLotteryRecord);
+        LotteryRecord latestRecord = null;
+        if (ObjectUtils.isEmpty(lotteryRecords)) {
+            log.info("未获取到兑奖记录");
+            return winningAmount;
+        }
+        latestRecord = lotteryRecords.get(0);
+        log.info("兑奖开奖记录-[{}]", latestRecord);
         String red = latestRecord.getRed();
         String[] split = red.split(",");
         //中奖数据
@@ -132,8 +146,8 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             reds.add(s);
         }
         EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
-        String dataString = getDateString();
-        queryWrapper.eq("date", dataString);
+//        String dataString = getDateString();
+        queryWrapper.eq("date", date);
         List<BuyRecord> buyRecords = buyRecordMapper.selectList(queryWrapper);
         for (BuyRecord buyRecord : buyRecords) {
             Integer redCount = 0;
@@ -157,9 +171,9 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             buyRecord.setWinningAmount(amount);
             buyRecord.setResult(latestRecord.getRed());
         }
-        if(buyRecords.size()>0){
+        if (buyRecords.size() > 0) {
             buyRecordMapper.insertBatchs(buyRecords);
-        }else {
+        } else {
             throw new RuntimeException("未获取到当日购买的数据。。。");
         }
         log.info("开奖核对成功！");
@@ -167,10 +181,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public List<BuyRecord> dateData() {
+    public List<BuyRecord> dateData(String dataDate) {
         EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
-        String dataString = getDateString();
-        queryWrapper.eq("date", dataString);
+//        String dataString = getDateString();
+        queryWrapper.eq("date", dataDate);
         return buyRecordMapper.selectList(queryWrapper);
     }
 
