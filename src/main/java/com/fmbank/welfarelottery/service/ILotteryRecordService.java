@@ -18,9 +18,9 @@ public interface ILotteryRecordService extends IService<LotteryRecord> {
 
     CountStatisticsResult showRecordSizeAndMapSize();
 
-    Integer dataRandom(Integer integer);
+    Integer dataRandom(Integer integer,String dataDate);
 
-    Integer dataInit();
+    Integer dataInit(String dataString);
 
     double cashAPrize();
 

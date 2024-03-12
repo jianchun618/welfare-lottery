@@ -64,7 +64,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public Integer dataRandom(Integer integer) {
+    public Integer dataRandom(Integer integer,String dataDate) {
         List<String> balls = BallRandomUtil.getDoubleColorBallNumber(integer);
         ArrayList<BuyRecord> buyRecords = new ArrayList<>();
         for (int i = 0; i < balls.size(); i++) {
@@ -77,8 +77,8 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
                 throw new RuntimeException("生成的红球号码已被-[" + lotteryRecord.getDate() + "]日开奖过，" + "号码-[" + ball + "]-期数-[" + lotteryRecords.get(0).getCode() + "]");
             }
             BuyRecord buyRecord = new BuyRecord();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            buyRecord.setDate(sdf.format(new Date()));
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            buyRecord.setDate(dataDate);
             buyRecord.setRed(ball);
             //i小于0，进行拼接0
             buyRecord.setBlue((i + 1) < 10 ? "0" + (i + 1) : String.valueOf(i + 1));
@@ -90,10 +90,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
-    public Integer dataInit() {
+    public Integer dataInit(String dataString) {
         //组装查询包装类，是否初始化过数据检查。
         EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
-        String dataString = getDateString();
+        //String dataString = getDateString();
         queryWrapper.eq("date", dataString);
         List<BuyRecord> initedData = buyRecordMapper.selectList(queryWrapper);
         if(initedData.size()>0){

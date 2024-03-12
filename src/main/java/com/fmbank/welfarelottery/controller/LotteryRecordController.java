@@ -26,22 +26,22 @@ public class LotteryRecordController {
     @Resource
     ILotteryRecordService iLotteryRecordService;
 
-    @GetMapping("/dataToDb")
+    @GetMapping("/pullDataToDb")
     @ApiOperation("拉取最新的N条数据")
     public Result dataToDb(Integer integer) {
         return Result.success(iLotteryRecordService.dataToDb(integer));
     }
 
-    @GetMapping("/getNewLeastRecord")
-    @ApiOperation("获取最新记录")
+    @GetMapping("/getLeastRecord")
+    @ApiOperation("获取最近的开奖记录")
     public Result getNewLeastRecord() {
         return Result.success(iLotteryRecordService.showLatestRecordInfo());
     }
 
     @GetMapping("/dataInit")
-    @ApiOperation("当日数据初始化")
-    public Result dataInit() {
-        return Result.success(iLotteryRecordService.dataInit());
+    @ApiOperation("根据日期购初始化买数据(日期格式:yyyy-MM-dd)")
+    public Result dataInit(String dataString) {
+        return Result.success(iLotteryRecordService.dataInit(dataString));
     }
 
     @GetMapping("/cashAPrize")
@@ -50,22 +50,22 @@ public class LotteryRecordController {
         return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize() + "元");
     }
 
-    @GetMapping("/dateData")
+    @GetMapping("/currentDateData")
     @ApiOperation("当日数据详情")
     public Result dateData() {
         return Result.success(iLotteryRecordService.dateData());
+    }
+
+    @GetMapping("/dataRandom")
+    @ApiOperation("根据日期，随机生成16条购买数据")
+    public Result dataRandom(Integer integer, String dataDate) {
+        return Result.success(iLotteryRecordService.dataRandom(integer, dataDate));
     }
 
     @GetMapping("/showRecordSizeAndMapSize")
     @ApiOperation("展示总记录数和去重map总条数")
     public Result showRecordSizeAndMapSize() {
         return Result.success(iLotteryRecordService.showRecordSizeAndMapSize());
-    }
-
-    @GetMapping("/dataRandom")
-    @ApiOperation("系统生成16条购买数据")
-    public Result dataRandom(Integer integer) {
-        return Result.success(iLotteryRecordService.dataRandom(integer));
     }
 
 }
