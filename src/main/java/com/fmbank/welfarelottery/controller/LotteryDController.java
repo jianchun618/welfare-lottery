@@ -21,7 +21,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/lotteryThreed")
-@Api(tags = "数据记录服务类")
+@Api(tags = "3D服务")
 public class LotteryDController {
     @Resource
     IThreeDRecordService iThreeDRecordService;
