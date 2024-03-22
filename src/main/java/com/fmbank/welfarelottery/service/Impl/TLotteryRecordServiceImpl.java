@@ -10,6 +10,7 @@ import com.fmbank.welfarelottery.response.model.CountStatisticsResult;
 import com.fmbank.welfarelottery.service.IDataGateway;
 import com.fmbank.welfarelottery.service.ILotteryRecordService;
 import com.fmbank.welfarelottery.util.BallRandomUtil;
+import com.fmbank.welfarelottery.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 @Component
 @Slf4j
@@ -66,6 +70,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
 
     @Override
     public Integer dataRandom(Integer integer, String dataDate) {
+        if(!DateUtil.isWeekday(dataDate)){
+            log.error("录入的日期，非开奖日期");
+            return 0;
+        }
         List<String> balls = BallRandomUtil.getDoubleColorBallNumber(integer);
         ArrayList<BuyRecord> buyRecords = new ArrayList<>();
         for (int i = 0; i < balls.size(); i++) {
@@ -204,5 +212,10 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
         //六等奖
         if ((redCount <= 2 && blueCount == 1)) return 5;
         return 0;
+    }
+
+    public static void main(String[] args) {
+
+
     }
 }

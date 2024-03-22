@@ -6,6 +6,9 @@ import org.apache.commons.lang3.time.DateUtils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -154,7 +157,7 @@ public class DateUtil {
      * @param date 日期
      * @return Date
      */
-    public static String getNextOfDay(String date,int offset) {
+    public static String getNextOfDay(String date, int offset) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN);
         Date specifiedDate = null;
         try {
@@ -219,15 +222,32 @@ public class DateUtil {
         return dates;
     }
 
+    /**
+     * 判断日期是否为周二，周四，周日
+     *
+     * @param dateString 日期
+     * @return
+     */
+    public static boolean isWeekday(String dateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateString, formatter);
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+        return dayOfWeek == DayOfWeek.TUESDAY ||
+                dayOfWeek == DayOfWeek.THURSDAY ||
+                dayOfWeek == DayOfWeek.SUNDAY;
+    }
+
     public static void main(String[] args) {
+        System.out.println(isWeekday("2024-03-10"));
         List<String> allDatesInYear = getAllDatesInYear(2022);
         System.out.println(allDatesInYear);
 
         System.out.println("=========current year=========");
 
 
-        System.out.println(getNextOfDay("2019-09-29",1));
-        System.out.println(getNextOfDay("2019-09-29",-1));
+        System.out.println(getNextOfDay("2019-09-29", 1));
+        System.out.println(getNextOfDay("2019-09-29", -1));
         Date currentYearStart = getCurrentFirstOfYear();
         System.out.println(formatDateTime(currentYearStart));
         Date currentYearEnd = getCurrentLastOfYear();
