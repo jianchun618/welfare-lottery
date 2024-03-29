@@ -25,4 +25,8 @@ public interface ILotteryRecordService extends IService<LotteryRecord> {
     double cashAPrize(String date);
 
     List<BuyRecord> dateData(String dataDate);
+
+    Object dataRandomYear(String year, Integer integer);
+
+    void yearCashAPrize(String date);
 }

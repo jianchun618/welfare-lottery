@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -46,7 +49,7 @@ public class LotteryRecordController {
 
     @GetMapping("/cashAPrize")
     @ApiOperation("日期统计盈利,日期格式:yyyy-MM-dd")
-    public Result cashAPrize( String date) {
+    public Result cashAPrize(String date) {
         return Result.success("本期盈利金额：" + iLotteryRecordService.cashAPrize(date) + "元");
     }
 
@@ -60,6 +63,26 @@ public class LotteryRecordController {
     @ApiOperation("日期，随机生成16条购买数据")
     public Result dataRandom(Integer integer, String dataDate) {
         return Result.success(iLotteryRecordService.dataRandom(integer, dataDate));
+    }
+
+    @GetMapping("/dataRandomYear")
+    @ApiOperation("按年，随机每天生成N条购买数据")
+    public Result dataRandom(String year, Integer integer) {
+        iLotteryRecordService.dataRandomYear(year, integer);
+        iLotteryRecordService.yearCashAPrize(year);
+        return Result.success();
+    }
+
+    @GetMapping("/dataRandomNYear")
+    @ApiOperation("生成N年，每天N注进行兑奖")
+    public Result dataRandomNYear(Integer integer) {
+        List<String> years = Arrays.asList("2014", "2015", "2016", "2017", "2018",
+                "2019", "2020", "2021", "2022", "2023");
+        for (String year : years) {
+            iLotteryRecordService.dataRandomYear(year, integer);
+            iLotteryRecordService.yearCashAPrize(year);
+        }
+        return Result.success();
     }
 
     @GetMapping("/showRecordSizeAndMapSize")

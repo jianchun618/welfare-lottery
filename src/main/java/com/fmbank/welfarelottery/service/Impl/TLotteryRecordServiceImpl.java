@@ -14,6 +14,7 @@ import com.fmbank.welfarelottery.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -69,11 +71,17 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
     }
 
     @Override
+    @Transactional
     public Integer dataRandom(Integer integer, String dataDate) {
-        if(!DateUtil.isWeekday(dataDate)){
+        if (!DateUtil.isWeekday(dataDate)) {
             log.error("录入的日期，非开奖日期");
             return 0;
         }
+        ArrayList<BuyRecord> buyRecords = getBuyRecords(integer, dataDate);
+        return buyRecordMapper.insertBatchs(buyRecords);
+    }
+
+    private ArrayList<BuyRecord> getBuyRecords(Integer integer, String dataDate) {
         List<String> balls = BallRandomUtil.getDoubleColorBallNumber(integer);
         ArrayList<BuyRecord> buyRecords = new ArrayList<>();
         for (int i = 0; i < balls.size(); i++) {
@@ -82,20 +90,26 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             queryWrapper.eq("red", ball);
             List<LotteryRecord> lotteryRecords = this.baseMapper.selectList(queryWrapper);
             if (lotteryRecords.size() > 0) {
-                LotteryRecord lotteryRecord = lotteryRecords.get(0);
-                throw new RuntimeException("生成的红球号码已被-[" + lotteryRecord.getDate() + "]日开奖过，" + "号码-[" + ball + "]-期数-[" + lotteryRecords.get(0).getCode() + "]");
+                i--;
+                continue;
+                //LotteryRecord lotteryRecord = lotteryRecords.get(0);
+                //throw new RuntimeException("生成的红球号码已被-[" + lotteryRecord.getDate() + "]日开奖过，" + "号码-[" + ball + "]-期数-[" + lotteryRecords.get(0).getCode() + "]");
             }
             BuyRecord buyRecord = new BuyRecord();
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             buyRecord.setDate(dataDate);
             buyRecord.setRed(ball);
             //i小于0，进行拼接0
-            buyRecord.setBlue((i + 1) < 10 ? "0" + (i + 1) : String.valueOf(i + 1));
+            int blue = (i + 1) % 16;
+            if (0 == blue) {
+                blue = 16;
+            }
+            buyRecord.setBlue(blue < 10 ? "0" + blue : String.valueOf(blue));
             buyRecord.setCreateTime(new Date());
             buyRecord.setModifyTime(new Date());
             buyRecords.add(buyRecord);
         }
-        return buyRecordMapper.insertBatchs(buyRecords);
+        return buyRecords;
     }
 
     @Override
@@ -120,7 +134,7 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
             addLists.add(newRecord);
         }
         //执行入库操作
-        if(addLists.size()>0){
+        if (addLists.size() > 0) {
             return buyRecordMapper.insertBatchs(addLists);
         }
         return 0;
@@ -194,6 +208,41 @@ public class TLotteryRecordServiceImpl extends ServiceImpl<LotteryRecordMapper, 
 //        String dataString = getDateString();
         queryWrapper.eq("date", dataDate);
         return buyRecordMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 按年每天生成 n主购买数据
+     *
+     * @param year
+     * @param integer
+     * @return
+     */
+    @Override
+    @Transactional
+    public Object dataRandomYear(String year, Integer integer) {
+        EntityWrapper<LotteryRecord> queryWrapper = new EntityWrapper<>();
+        queryWrapper.like("date", year);
+        List<LotteryRecord> lotteryRecords = this.baseMapper.selectList(queryWrapper);
+        ArrayList<BuyRecord> buyR = new ArrayList<>();
+        for (LotteryRecord lotteryRecord : lotteryRecords) {
+            ArrayList<BuyRecord> buyRecords = getBuyRecords(integer, lotteryRecord.getDate());
+            buyR.addAll(buyRecords);
+            log.info("日期-[{}],生成的注数-[],注成功", lotteryRecord.getDate(), integer);
+        }
+        return buyRecordMapper.insertBatchs(buyR);
+    }
+
+    @Override
+    public void yearCashAPrize(String year) {
+        EntityWrapper<BuyRecord> queryWrapper = new EntityWrapper<>();
+        queryWrapper.like("date", year);
+        List<BuyRecord> lotteryRecords = buyRecordMapper.selectList(queryWrapper);
+        List<String> dates = lotteryRecords.stream().map(item -> item.getDate()).distinct().collect(Collectors.toList());
+        log.info("date size is - [{}]", dates.size());
+        for (String date : dates) {
+            this.cashAPrize(date);
+        }
+        log.info("deal success - [{}]", dates.size());
     }
 
     private double getAmount(Integer redCount, Integer blueCount) {

@@ -12,7 +12,7 @@ CREATE TABLE `t_buy_record` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `t_buy_record_UN` (`date`,`blue`)
+  UNIQUE KEY `t_buy_record_UN` (`date`,`red`)
 ) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8 COMMENT='购买记录表';
 
 -- 开奖记录表
