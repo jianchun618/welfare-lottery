@@ -135,6 +135,11 @@
             <version>0.1.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>2.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>
