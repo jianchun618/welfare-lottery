@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @ClassName: SftpServerHelper
  * @Description: Sftp 服务器 操作助手类
- * @author: XiongHao
+ * @author: jianchun
  * @date: 2022/8/18 11:38
  */
 public final class SftpServerHelper {
@@ -97,7 +97,7 @@ public final class SftpServerHelper {
         if (null == clientSession)
             return false;
 
-        CommandRes lsRes = exec("sudo ls");
+        CommandRes lsRes = exec("ls");
 
         return lsRes.isSuccess();
     }
@@ -111,7 +111,7 @@ public final class SftpServerHelper {
 
     public final boolean canConnectSudo() {
 
-        CommandRes lsRes = exec("sudo ls");
+        CommandRes lsRes = exec("ls");
 
         return lsRes.isSuccess();
     }
@@ -154,7 +154,7 @@ public final class SftpServerHelper {
 
 
         // 2、创建文件夹
-        String createDataDir = String.format("sudo mkdir -p %s", dataPushDir);
+        String createDataDir = String.format("mkdir -p %s", dataPushDir);
         CommandRes createDataDirRes = exec(createDataDir);
         if (!createDataDirRes.isSuccess()) {
             return false;
@@ -168,14 +168,14 @@ public final class SftpServerHelper {
         setPasswdX(userName);
 
         // 4、修改文件归属
-        String chown = String.format("sudo chown %s:%s %s", userName, group, dataPushDir);
+        String chown = String.format("chown %s:%s %s", userName, group, dataPushDir);
         CommandRes chownRes = exec(chown);
         if (!chownRes.isSuccess()) {
             return false;
         }
 
         // 5、修改文件授权
-        String chmod = String.format("sudo chmod 750 %s", dataPushDir);
+        String chmod = String.format("chmod 750 %s", dataPushDir);
         CommandRes chmodRes = exec(chmod);
 
         return chmodRes.isSuccess();
@@ -188,7 +188,7 @@ public final class SftpServerHelper {
         }
 
         // 修改文件归属
-        String chown = String.format("sudo chown %s:%s %s", userName, group, dataPushDir);
+        String chown = String.format("chown %s:%s %s", userName, group, dataPushDir);
         CommandRes chownRes = exec(chown);
         if (!chownRes.isSuccess()) {
             logger.info("设置文件归属[{},{}:{}]失败.[{}]", dataPushDir, userName, group, chownRes.toString());
@@ -196,7 +196,7 @@ public final class SftpServerHelper {
         }
 
         // 修改文件授权
-        String chmod = String.format("sudo chmod 750 %s", dataPushDir);
+        String chmod = String.format("chmod 750 %s", dataPushDir);
         CommandRes chmodRes = exec(chmod);
         if (!chmodRes.isSuccess()) {
             logger.info("设置文件权限失败[{}，750]失败.[{}]", dataPushDir, userName, group, chmodRes.toString());
@@ -207,7 +207,7 @@ public final class SftpServerHelper {
     }
 
     public final boolean createDataDir(String dataDir) {
-        String createDataDir = String.format("sudo mkdir -p %s", dataDir);
+        String createDataDir = String.format("mkdir -p %s", dataDir);
         CommandRes createDataDirRes = exec(createDataDir);
         if (createDataDirRes.isSuccess() ||
                 (null != createDataDirRes.getErr())
@@ -231,7 +231,7 @@ public final class SftpServerHelper {
     public final boolean modUser(String userName, String newUserName, String password, String dataPushDir) {
         String crypted = cryptedPwd(password);
         String modUserCommand =
-                String.format("sudo usermod -l %s %s -p %s -d %s", newUserName, userName, crypted, dataPushDir);
+                String.format("usermod -l %s %s -p %s -d %s", newUserName, userName, crypted, dataPushDir);
         CommandRes addUserRes = exec(modUserCommand);
 
         if (addUserRes.isSuccess()) {
@@ -254,7 +254,7 @@ public final class SftpServerHelper {
         String crypted = cryptedPwd(password);
 
         String addUserCommand =
-                String.format("sudo useradd %s -p %s -d %s", userName, crypted, dataPushDir);
+                String.format("useradd %s -p %s -d %s", userName, crypted, dataPushDir);
         CommandRes addUserRes = exec(addUserCommand);
 
         boolean result = addUserRes.isSuccess() || (null != addUserRes.getErr() && addUserRes.getErr().contains("already exists"));
@@ -280,7 +280,7 @@ public final class SftpServerHelper {
     public final boolean createRwUserInfo(String group, String userName, String password, String dataPushDir) {
         String crypted = cryptedPwd(password);
         String addUserCommand =
-                String.format("sudo useradd %s -g %s -p %s -d %s", userName, group, crypted, dataPushDir);
+                String.format("useradd %s -g %s -p %s -d %s", userName, group, crypted, dataPushDir);
         CommandRes addUserRes = exec(addUserCommand);
 
         if (addUserRes.isSuccess() ||
@@ -301,7 +301,7 @@ public final class SftpServerHelper {
      * @return
      */
     public final boolean createUserGroup(String group) {
-        String addGroupCommand = String.format("sudo groupadd %s", group);
+        String addGroupCommand = String.format("groupadd %s", group);
         CommandRes addGroupRes = exec(addGroupCommand);
         if (addGroupRes.isSuccess() ||
                 (null != addGroupRes.getErr())
@@ -321,7 +321,7 @@ public final class SftpServerHelper {
      * @return
      */
     public final boolean modUserGroup(String userName, String group) {
-        String modUserGroup = String.format("sudo usermod -a -G %s %s", group, userName);
+        String modUserGroup = String.format("usermod -a -G %s %s", group, userName);
         CommandRes addGroupRes = exec(modUserGroup);
         if (addGroupRes.isSuccess()) {
             logger.info("已完成完成用户[{}]添加到组[{}]的操作.", userName, group);
@@ -333,7 +333,7 @@ public final class SftpServerHelper {
     }
 
     public final boolean alreadyExistsUser(String userName) {
-        String alreadyExist = String.format("sudo id %s", userName);
+        String alreadyExist = String.format("id %s", userName);
         CommandRes alreadyExistRes = exec(alreadyExist);
         if (alreadyExistRes.isSuccess()) {
             return true;
@@ -351,7 +351,7 @@ public final class SftpServerHelper {
      * @return
      */
     public final boolean lockUser(String userName) {
-        String lock = String.format("sudo passwd -l %s", userName);
+        String lock = String.format("passwd -l %s", userName);
         CommandRes lockRes = exec(lock);
         if (lockRes.isSuccess()) {
             return true;
@@ -371,7 +371,7 @@ public final class SftpServerHelper {
      * @return
      */
     public boolean deleteUser(String userName) {
-        String hasDir = String.format("sudo userdel %s", userName);
+        String hasDir = String.format("userdel %s", userName);
         CommandRes deleteRes = exec(hasDir);
         if (deleteRes.isSuccess() ||
                 (deleteRes.getErr() != null && deleteRes.getErr().indexOf("does not exist") > -1)) {
@@ -383,7 +383,7 @@ public final class SftpServerHelper {
 
 
     public final boolean setPasswdX(String userName) {
-        String passwdX = String.format("sudo passwd -x 99999 %s", userName);
+        String passwdX = String.format("passwd -x 99999 %s", userName);
         CommandRes passwdXRes = exec(passwdX);
         if (passwdXRes.isSuccess()) {
             logger.info("已完成用户[{}]密码永久有效设置.", userName);
@@ -400,7 +400,7 @@ public final class SftpServerHelper {
      * @return
      */
     public boolean gpasswd(String userName, String group) {
-        String gpasswd = String.format("sudo gpasswd -d %s %s", userName, group);
+        String gpasswd = String.format("gpasswd -d %s %s", userName, group);
         CommandRes gpasswdRes = exec(gpasswd);
         if (gpasswdRes.isSuccess()) {
             return true;
@@ -421,9 +421,9 @@ public final class SftpServerHelper {
      * @return
      */
     public boolean hasDir(String fullDirPath) {
-        String hasDir = String.format("sudo cd %s", fullDirPath);
+        String hasDir = String.format("cd %s", fullDirPath);
         CommandRes hasDirRes = exec(hasDir);
-        return !hasDirRes.isSuccess();
+        return hasDirRes.isSuccess();
     }
 
 
@@ -451,7 +451,7 @@ public final class SftpServerHelper {
      * @return
      */
     public Date lastedDateTime(String dirPath) {
-        String lastedTime = String.format("sudo ls -l %s --full-time", dirPath);
+        String lastedTime = String.format("ls -l %s --full-time", dirPath);
         CommandRes lastedTimeRes = exec(lastedTime);
 
         if (!lastedTimeRes.isSuccess()) {
@@ -600,10 +600,10 @@ public final class SftpServerHelper {
 
         //String decrypt = AESUtil.decrypt("h9ax41m1Ni4K41VrP3sYMw==", "1bb95c2609e31b6c875efe65a4bd0785");
 
-        SftpServerHelper instance = SftpServerHelper.instance("testsudo", "666666", "10.1.56.28", 22);
+        SftpServerHelper instance = SftpServerHelper.instance("root", "123456", "192.168.134.8", 22);
         //  instance.gpasswd("testadd8", "testx5");\
         //  instance.alreadyExistsUser("testx50000");
-        instance.lockUser("testx11112");
+        System.out.println(instance.hasDir("/opt"));
 
     }
 
