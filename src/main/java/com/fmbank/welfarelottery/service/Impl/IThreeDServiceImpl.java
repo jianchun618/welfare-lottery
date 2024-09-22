@@ -78,7 +78,7 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
             String lastOfDay = DateUtil.getNextOfDay(tThreeDRecord.getDate(),1);
             //获取t+1的数据，
             TThreeDRecord nextPeriod = tThreeDRecordMapper.selectByDate(lastOfDay);
-            if (!ObjectUtils.isEmpty(nextPeriod) &&nextPeriod.getLotteryNumber().equals(tThreeDBuyRecord.getBuyNumber())) {
+            if (!ObjectUtils.isEmpty(nextPeriod) &&tThreeDBuyRecord.getBuyNumber().contains(nextPeriod.getLotteryNumber())) {
                 tThreeDBuyRecord.setWinStatus("1");
             }
             tThreeDBuyRecords.add(tThreeDBuyRecord);
@@ -130,6 +130,17 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
                 tThreeDHisSummary.setCreateTime(new Date());
                 tThreeDHisSummary.setModifyTime(new Date());
                 tThreeDHisSummaries.add(tThreeDHisSummary);
+            }else {
+                TThreeDHisSummary tThreeDHisSummary = new TThreeDHisSummary();
+                tThreeDHisSummary.setCalculateDate(date);
+                tThreeDHisSummary.setLotteryNumber(lotteryNumber);
+                tThreeDHisSummary.setCode(null);
+                tThreeDHisSummary.setDate(null);
+                //日期相差的天数
+                tThreeDHisSummary.setPeriod(1000);
+                tThreeDHisSummary.setCreateTime(new Date());
+                tThreeDHisSummary.setModifyTime(new Date());
+                tThreeDHisSummaries.add(tThreeDHisSummary);
             }
         }
         if (tThreeDHisSummaries.size() > 0) {
@@ -138,7 +149,7 @@ public class IThreeDServiceImpl extends ServiceImpl<LotteryRecordMapper, Lottery
         List<TThreeDHisSummary> tThreeHisSumList = tThreeDHisSummaryMapper.selectLastTenData();
         StringBuilder builder = new StringBuilder("");
         for (TThreeDHisSummary tThreeDHisSummary : tThreeHisSumList) {
-            builder.append(tThreeDHisSummary.getLotteryNumber());
+            builder.append(tThreeDHisSummary.getLotteryNumber()+",");
         }
         return builder.toString();
     }

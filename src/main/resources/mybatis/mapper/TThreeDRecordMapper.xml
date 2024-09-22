@@ -40,7 +40,7 @@
     </insert>
 
     <select id="selectByYear" resultType="com.fmbank.welfarelottery.entity.TThreeDRecord">
-      select * from t_three_d_record  where `date` like  REPLACE(CONCAT(#{year},'%'), '_', '\\_') order by `date`
+      select * from t_three_d_record  where `date` like  REPLACE(CONCAT(#{year},'%'), '_', '\\_') order by `date` limit 1
     </select>
     <select id="selectDateByBeforeCode" resultType="com.fmbank.welfarelottery.entity.TThreeDRecord">
       select * from t_three_d_record  where `date`   &lt;= #{date} and lottery_number= #{lotteryNumber} order by `date` desc limit 1
