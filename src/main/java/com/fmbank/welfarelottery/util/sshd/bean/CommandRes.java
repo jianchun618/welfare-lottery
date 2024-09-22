@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * @ClassName: CommandRes
  * @Description: 命令返回对象
- * @author: XiongHao
+ * @author: jc
  * @date: 2022/8/22 11:21
  */
 public class CommandRes implements Serializable {

@@ -6,7 +6,7 @@ import org.apache.sshd.client.session.ClientSession;
 /**
  * @ClassName: SftpClientAndSession
  * @Description: 包上SftpClient和Session
- * @author: XiongHao
+ * @author: jc
  * @date: 2022/8/19 16:49
  */
 public class SftpClientAndSession {
